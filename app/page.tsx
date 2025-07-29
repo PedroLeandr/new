@@ -11,7 +11,7 @@ export default function AuthPage() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:3001/api/auth/login", {
+      const res = await axios.post("http://213.199.41.43:3001/api/auth/login", {
         email,
         password,
       });
@@ -28,7 +28,7 @@ export default function AuthPage() {
 
   const handleRegister = async () => {
     try {
-      const res = await axios.post("http://localhost:3001/api/auth/register", {
+      const res = await axios.post("http://213.199.41.43:3001/api/auth/register", {
         email,
         password,
       });
