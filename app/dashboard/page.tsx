@@ -8,7 +8,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) router.push("/");
+    if (!token) router.push("/login");
     else setOk(true);
   }, [router]);
 
