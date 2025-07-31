@@ -4,7 +4,13 @@ import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [userName, setUserName] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userFirstName, setUserFirstName] = useState<string | null>(null);
+  const [userSurname, setUserSurname] = useState<string | null>(null);
+  const [userCompanyName, setUserCompanyName] = useState<string | null>(null);
+  const [userCountryCode, setUserCountryCode] = useState<string | null>(null);
+  const [userPhone, setUserPhone] = useState<string | null>(null);
+  const [userPlan, setUserPlan] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
 
@@ -26,7 +32,13 @@ export default function DashboardPage() {
         return res.json();
       })
       .then((data) => {
-        setUserName(data.user.name);
+        setUserId(data.user.id);
+        setUserFirstName(data.user.firstName);
+        setUserSurname(data.user.surname);
+        setUserCompanyName(data.user.companyName);
+        setUserCountryCode(data.user.countryCode);
+        setUserPhone(data.user.phone);
+        setUserPlan(data.user.plan);
         setUserEmail(data.user.email);
       })
       .catch(() => {
@@ -46,8 +58,12 @@ export default function DashboardPage() {
     <div>
       <h1>Dashboard</h1>
       <p>Área protegida</p>
-      <p>Nome do user logado: {userName}</p>
+      <p>Id do user: {userId}</p>
+      <p>Nome do user logado: {userFirstName} {userSurname}</p>
+      <p>Nome da Empresa user logado: {userCompanyName}</p>
+      <p>Número de telemóvel do user logado: {userCountryCode} {userPhone}</p>
       <p>Email do user logado: {userEmail}</p>
+      <p>Plano do user logado: {userPlan}</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
