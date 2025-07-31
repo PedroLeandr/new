@@ -15,7 +15,7 @@ export default function DashboardPage() {
       return;
     }
 
-    fetch("http://localhost:3001/api/auth/validate", {
+    fetch("http://213.199.41.43:3001/api/auth/validate", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
