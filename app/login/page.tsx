@@ -9,12 +9,13 @@ export default function AuthPage() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
 
+  const [registerName, setRegisterName] = useState("")
   const [registerEmail, setRegisterEmail] = useState("")
   const [registerPassword, setRegisterPassword] = useState("")
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://213.199.41.43:3001/api/auth/login", {
+      const res = await axios.post("http://localhost:3001/api/auth/login", {
         email: loginEmail,
         password: loginPassword,
       })
@@ -31,7 +32,8 @@ export default function AuthPage() {
 
   const handleRegister = async () => {
     try {
-      await axios.post("http://213.199.41.43:3001/api/auth/register", {
+      await axios.post("http://localhost:3001/api/auth/register", {
+        name: registerName,
         email: registerEmail,
         password: registerPassword,
       })
@@ -63,8 +65,15 @@ export default function AuthPage() {
         <button onClick={handleLogin}>Entrar</button>
       </div>
 
+
+
       <div>
         <h1>Registrar</h1>
+        <input
+          placeholder="Nome"
+          value={registerName}
+          onChange={(e) => setRegisterName(e.target.value)}
+        />
         <input
           placeholder="Email"
           value={registerEmail}

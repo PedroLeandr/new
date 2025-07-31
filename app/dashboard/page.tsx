@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [ok, setOk] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -13,7 +15,7 @@ export default function DashboardPage() {
       return;
     }
 
-    fetch("http://213.199.41.43:3001/api/auth/validate", {
+    fetch("http://localhost:3001/api/auth/validate", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -23,8 +25,9 @@ export default function DashboardPage() {
         if (!res.ok) throw new Error("Token inválido");
         return res.json();
       })
-      .then(() => {
-        setOk(true);
+      .then((data) => {
+        setUserName(data.user.name);
+        setUserEmail(data.user.email);
       })
       .catch(() => {
         localStorage.removeItem("token");
@@ -32,12 +35,20 @@ export default function DashboardPage() {
       });
   }, [router]);
 
-  if (!ok) return null;
+  if (!userEmail) return null;
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    router.push("/login");
+  }
 
   return (
     <div>
       <h1>Dashboard</h1>
       <p>Área protegida</p>
+      <p>Nome do user logado: {userName}</p>
+      <p>Email do user logado: {userEmail}</p>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 }
