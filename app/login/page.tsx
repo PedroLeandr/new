@@ -20,7 +20,11 @@ export default function AuthPage() {
   const [selectedPlan, setSelectedPlan] = useState("basic")
   const [acceptedPolicy, setAcceptedPolicy] = useState(false)
 
-  const [showCodeInput, setShowCodeInput] = useState(false)
+  const [showRegisterCodeInput, setShowRegisterCodeInput] = useState(false)
+  const [showPasswordReset, setShowPasswordReset] = useState(false)
+  const [passwordResetEmail, setPasswordResetEmail] = useState("")
+  const [passwordResetPassword, setPasswordResetPassword] = useState("")
+  const [showPasswordResetCodeInput, setShowPasswordResetCodeInput] = useState(false)
   const [codeInput, setCodeInput] = useState("")
 
   const countries = [
@@ -48,6 +52,8 @@ export default function AuthPage() {
     }
   }
 
+
+
   const handleRegister = async () => {
     if (registerPassword !== confirmPassword) {
       alert("As senhas não coincidem.")
@@ -71,7 +77,7 @@ export default function AuthPage() {
         plan: selectedPlan,
       })
 
-      setShowCodeInput(true)
+      setShowRegisterCodeInput(true)
       alert("Código enviado para o seu email, verifique e insira abaixo.")
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -82,21 +88,20 @@ export default function AuthPage() {
     }
   }
 
-  const handleVerifyCode = async () => {
+  const handleVerifyRegisterCode = async () => {
     if (codeInput.length !== 6) {
       alert("Insira um código válido de 6 dígitos.")
       return
     }
 
     try {
-      await axios.post("http://213.199.41.43:3001/api/auth/verify-code", {
+      await axios.post("http://213.199.41.43:3001/api/auth/verify-register-code", {
         email: registerEmail,
         code: codeInput,
       })
 
       alert("Registo confirmado! Pode agora fazer login.")
-      setShowCodeInput(false)
-      router.push("/dashboard")
+      setShowRegisterCodeInput(false)
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         alert(err.response?.data?.error || "Código inválido ou expirado")
@@ -106,25 +111,115 @@ export default function AuthPage() {
     }
   }
 
+
+
+  const handlePasswordReset = async () => {
+    setShowPasswordReset(true)
+
+    if (!passwordResetEmail) {
+      alert("Por favor, insira seu email para recuperar a senha.")
+      return
+    }
+
+    try {
+      await axios.post("http://213.199.41.43:3001/api/auth/start-password-reset", {
+        email: passwordResetEmail,
+      })
+      alert("Código de recuperação enviado para o seu email.")
+      setShowPasswordResetCodeInput(true)
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.error || "Erro ao enviar código de recuperação")
+      } else {
+        alert("Erro ao enviar código de recuperação")
+      }
+    }
+  }
+
+  const handleVerifyPasswordResetCode = async () => {
+    if (codeInput.length !== 6) {
+      alert("Insira um código válido de 6 dígitos.")
+      return
+    }
+
+    try {
+      await axios.post("http://213.199.41.43:3001/api/auth/verify-password-reset-code", {
+        email: passwordResetEmail,
+        newPassword: passwordResetPassword,
+        code: codeInput,
+      })
+
+      alert("Registo confirmado! Pode agora fazer login.")
+      setShowPasswordResetCodeInput(false)
+      setShowPasswordReset(false)
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.error || "Código inválido ou expirado")
+      } else {
+        alert("Erro ao verificar código")
+      }
+    }
+  }
+
+
   return (
     <div>
-      <div>
-        <h1>Login</h1>
-        <input
-          placeholder="Email"
-          value={loginEmail}
-          onChange={(e) => setLoginEmail(e.target.value)}
-        />
-        <input
-          placeholder="Senha"
-          type="password"
-          value={loginPassword}
-          onChange={(e) => setLoginPassword(e.target.value)}
-        />
-        <button onClick={handleLogin}>Entrar</button>
-      </div>
+      {!showPasswordReset && (
+        <div>
+          <h1>Login</h1>
+          <input
+            placeholder="Email"
+            value={loginEmail}
+            onChange={(e) => setLoginEmail(e.target.value)}
+          />
+          <input
+            placeholder="Senha"
+            type="password"
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)}
+          />
+          <button onClick={handleLogin}>Entrar</button>
+          <button onClick={handlePasswordReset}>
+            Esqueci a Senha
+          </button>
+        </div>
+      )}
 
-      {!showCodeInput && (
+      {showPasswordReset && (
+        <div>
+          <h1>Recuperar Senha</h1>
+          <input
+            placeholder="Email"
+            value={passwordResetEmail}
+            onChange={(e) => setPasswordResetEmail(e.target.value)}
+          />
+          <button onClick={handlePasswordReset}>Enviar Código de Recuperação</button>
+        </div>
+      )}
+
+      {showPasswordResetCodeInput && (
+        <div>
+          <h2>Digite o código de 6 dígitos enviado para o seu email</h2>
+          <input
+            placeholder="Código"
+            maxLength={6}
+            value={codeInput}
+            onChange={(e) => setCodeInput(e.target.value.replace(/\D/g, ''))}
+          />
+          
+          <input 
+            type="password" 
+            placeholder="Nova Senha"
+            value={passwordResetPassword}  
+            onChange={(e) => setPasswordResetPassword(e.target.value)}
+          />
+          <button onClick={handleVerifyPasswordResetCode}>Verificar Código</button>
+        </div>
+      )}
+
+
+
+      {!showRegisterCodeInput && (
         <div>
           <h1>Registrar</h1>
           <input
@@ -206,7 +301,7 @@ export default function AuthPage() {
         </div>
       )}
 
-      {showCodeInput && (
+      {showRegisterCodeInput && (
         <div>
           <h2>Digite o código de 6 dígitos enviado para o seu email</h2>
           <input
@@ -215,7 +310,7 @@ export default function AuthPage() {
             value={codeInput}
             onChange={(e) => setCodeInput(e.target.value.replace(/\D/g, ''))}
           />
-          <button onClick={handleVerifyCode}>Verificar Código</button>
+          <button onClick={handleVerifyRegisterCode}>Verificar Código</button>
         </div>
       )}
     </div>
