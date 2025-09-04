@@ -40,7 +40,7 @@ export default function AuthPage() {
   const handleStartLogin = async () => {
     if (!loginEmail) return
     try {
-      await axios.post("http://localhost:3001/api/auth/start-login", { email: loginEmail })
+      await axios.post("http://213.199.41.43:3001/api/auth/start-login", { email: loginEmail })
       setShowLoginCodeInput(true)
       alert("Código enviado para o seu email.")
     } catch (err: unknown) {
@@ -53,7 +53,7 @@ export default function AuthPage() {
     if (loginCode.length !== 6) return
     if (!loginPassword) return
     try {
-      const res = await axios.post("http://localhost:3001/api/auth/verify-login-code", {
+      const res = await axios.post("http://213.199.41.43:3001/api/auth/verify-login-code", {
         email: loginEmail,
         password: loginPassword,
         code: loginCode,
@@ -70,7 +70,7 @@ export default function AuthPage() {
     if (registerPassword !== confirmPassword) return
     if (!acceptedPolicy) return
     try {
-      await axios.post("http://localhost:3001/api/auth/start-register", {
+      await axios.post("http://213.199.41.43:3001/api/auth/start-register", {
         firstName: registerFirstName,
         surname: registerSurname,
         companyName: registerCompanyName,
@@ -91,7 +91,7 @@ export default function AuthPage() {
   const handleVerifyRegisterCode = async () => {
     if (codeInput.length !== 6) return
     try {
-      await axios.post("http://localhost:3001/api/auth/verify-register-code", {
+      await axios.post("http://213.199.41.43:3001/api/auth/verify-register-code", {
         email: registerEmail,
         code: codeInput,
       })
@@ -107,7 +107,7 @@ export default function AuthPage() {
     setShowPasswordReset(true)
     if (!passwordResetEmail) return
     try {
-      await axios.post("http://localhost:3001/api/auth/start-password-reset", { email: passwordResetEmail })
+      await axios.post("http://213.199.41.43:3001/api/auth/start-password-reset", { email: passwordResetEmail })
       alert("Código de recuperação enviado para o seu email.")
       setShowPasswordResetCodeInput(true)
     } catch (err: unknown) {
@@ -119,7 +119,7 @@ export default function AuthPage() {
   const handleVerifyPasswordResetCode = async () => {
     if (codeInput.length !== 6) return
     try {
-      await axios.post("http://localhost:3001/api/auth/verify-password-reset-code", {
+      await axios.post("http://213.199.41.43:3001/api/auth/verify-password-reset-code", {
         email: passwordResetEmail,
         newPassword: passwordResetPassword,
         code: codeInput,
